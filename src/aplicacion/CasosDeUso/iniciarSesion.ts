@@ -5,7 +5,7 @@ import { RepositorioUsuarios } from "../../dominio/puertos/repositorioUsuario";
 export class IniciarSesion {
   constructor(private repositorioUsuarios: RepositorioUsuarios) {}
 
-  async ejecutar(correo: string, contrasena: string): Promise<{ token: string }> {
+  async ejecutar(correo: string, contrasena: string): Promise<{ token: string; usuario: { id: string; correo: string; nombre: string } }> {
     const usuario = await this.repositorioUsuarios.buscarPorCorreo(correo);
     if (!usuario) {
       throw new Error("Credenciales inválidas");
@@ -19,6 +19,6 @@ export class IniciarSesion {
     const secreto = process.env.JWT_SECRET || "secreto_temporal";
     const token = jwt.sign({ userId: usuario.id }, secreto, { expiresIn: "1d" });
 
-    return { token };
+    return { token, usuario: { id: usuario.id, correo: usuario.correo, nombre: usuario.nombre } };
   }
 }
