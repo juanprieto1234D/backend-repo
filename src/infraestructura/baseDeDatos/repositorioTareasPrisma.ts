@@ -50,11 +50,27 @@ export class RepositorioTareasPrisma implements RepositorioTareas {
     await prisma.task.delete({ where: { id } });
   }
 
+  async eliminarPorUsuario(usuarioId: string): Promise<void> {
+    await prisma.task.deleteMany({ where: { userId: usuarioId } });
+  }
+
   async marcarComoCompletada(id: string, completada: boolean): Promise<Tarea> {
     const actualizada = await prisma.task.update({
       where: { id },
       data: { completed: completada },
     });
     return convertir(actualizada);
+  }
+
+  async contarTotal(): Promise<number> {
+    return prisma.task.count();
+  }
+
+  async contarCompletadas(): Promise<number> {
+    return prisma.task.count({ where: { completed: true } });
+  }
+
+  async contarPendientes(): Promise<number> {
+    return prisma.task.count({ where: { completed: false } });
   }
 }

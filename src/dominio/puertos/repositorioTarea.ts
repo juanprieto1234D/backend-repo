@@ -6,5 +6,9 @@ export interface RepositorioTareas {
   buscarPorId(id: string): Promise<Tarea | null>;
   actualizar(id: string, datos: Partial<{ titulo: string; descripcion: string | null; fechaLimite: Date | null }>): Promise<Tarea>;
   eliminar(id: string): Promise<void>;
+  eliminarPorUsuario(usuarioId: string): Promise<void>;
   marcarComoCompletada(id: string, completada: boolean): Promise<Tarea>;
+  contarTotal(): Promise<number>;
+  contarCompletadas(): Promise<number>;
+  contarPendientes(): Promise<number>;
 }

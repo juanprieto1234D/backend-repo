@@ -3,8 +3,10 @@ import rutasTareas from "./infraestructura/http/rutasTareas";
 import cors from "cors";
 import dotenv from "dotenv";
 import rutasAutenticacion from "./infraestructura/http/rutasAutenticacion";
+import rutasAdmin from "./infraestructura/http/rutasAdmin";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./swagger";
+import { sembrarAdminInicial } from "./infraestructura/seedAdmin";
 
 dotenv.config();
 
@@ -19,8 +21,10 @@ app.get("/", (req, res) => {
 
 app.use("/auth", rutasAutenticacion);
 app.use("/tareas", rutasTareas);
+app.use("/admin", rutasAdmin);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  await sembrarAdminInicial();
 });

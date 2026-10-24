@@ -19,7 +19,9 @@ export class RegistrarUsuario {
       correo,
       contrasenaEncriptada,
       nombre,
-      new Date()
+      new Date(),
+      "USUARIO",
+      true
     );
 
     return this.repositorioUsuarios.crear(nuevoUsuario);
