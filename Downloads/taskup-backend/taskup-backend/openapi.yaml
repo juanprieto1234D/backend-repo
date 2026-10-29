@@ -1,0 +1,333 @@
+openapi: 3.0.3
+info:
+  title: TaskUp API
+  version: "1.0.0"
+  description: >
+    API REST del backend de TaskUp, un gestor de tareas académicas.
+    Construida con Express + TypeScript + Prisma, siguiendo arquitectura hexagonal.
+servers:
+  - url: http://localhost:3000
+    description: Servidor local de desarrollo
+
+tags:
+  - name: Autenticación
+    description: Registro e inicio de sesión de usuarios
+  - name: Tareas
+    description: Operaciones CRUD sobre las tareas académicas
+
+paths:
+  /auth/registro:
+    post:
+      tags: [Autenticación]
+      summary: Registra un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroEntrada'
+            example:
+              correo: ana@correo.com
+              contrasena: miClave123
+              nombre: Ana Pérez
+      responses:
+        '201':
+          description: Usuario creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioPublico'
+        '400':
+          description: Datos inválidos o correo ya registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/login:
+    post:
+      tags: [Autenticación]
+      summary: Inicia sesión y devuelve un token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginEntrada'
+            example:
+              correo: ana@correo.com
+              contrasena: miClave123
+      responses:
+        '200':
+          description: Autenticación exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRespuesta'
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tareas:
+    post:
+      tags: [Tareas]
+      summary: Crea una nueva tarea
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TareaEntrada'
+            example:
+              titulo: Entregar taller de Cálculo
+              descripcion: Capítulos 3 y 4
+              fechaLimite: "2026-10-10T23:59:00.000Z"
+              usuarioId: f3b1c2d4-...
+      responses:
+        '201':
+          description: Tarea creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarea'
+        '400':
+          description: Datos inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tareas/{usuarioId}:
+    get:
+      tags: [Tareas]
+      summary: Lista las tareas de un usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: usuarioId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Lista de tareas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tarea'
+
+  /tareas/{id}:
+    put:
+      tags: [Tareas]
+      summary: Actualiza una tarea existente
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TareaActualizarEntrada'
+      responses:
+        '200':
+          description: Tarea actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarea'
+        '400':
+          description: Datos inválidos o tarea no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Tareas]
+      summary: Elimina una tarea
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Tarea eliminada (sin contenido)
+        '400':
+          description: Tarea no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tareas/{id}/completar:
+    patch:
+      tags: [Tareas]
+      summary: Marca o desmarca una tarea como completada
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [completada]
+              properties:
+                completada:
+                  type: boolean
+            example:
+              completada: true
+      responses:
+        '200':
+          description: Tarea actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tarea'
+        '400':
+          description: Tarea no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    RegistroEntrada:
+      type: object
+      required: [correo, contrasena, nombre]
+      properties:
+        correo:
+          type: string
+          format: email
+        contrasena:
+          type: string
+          format: password
+          minLength: 6
+        nombre:
+          type: string
+
+    LoginEntrada:
+      type: object
+      required: [correo, contrasena]
+      properties:
+        correo:
+          type: string
+          format: email
+        contrasena:
+          type: string
+          format: password
+
+    UsuarioPublico:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        correo:
+          type: string
+          format: email
+        nombre:
+          type: string
+
+    TokenRespuesta:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT con el id del usuario, válido por 1 día.
+
+    TareaEntrada:
+      type: object
+      required: [titulo, usuarioId]
+      properties:
+        titulo:
+          type: string
+          maxLength: 120
+        descripcion:
+          type: string
+          nullable: true
+        fechaLimite:
+          type: string
+          format: date-time
+          nullable: true
+        usuarioId:
+          type: string
+          format: uuid
+
+    TareaActualizarEntrada:
+      type: object
+      properties:
+        titulo:
+          type: string
+          maxLength: 120
+        descripcion:
+          type: string
+          nullable: true
+        fechaLimite:
+          type: string
+          format: date-time
+          nullable: true
+
+    Tarea:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        titulo:
+          type: string
+        descripcion:
+          type: string
+          nullable: true
+        completada:
+          type: boolean
+        fechaLimite:
+          type: string
+          format: date-time
+          nullable: true
+        creadaEn:
+          type: string
+          format: date-time
+        usuarioId:
+          type: string
+          format: uuid
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
