@@ -14,23 +14,49 @@ datasource db {
 }
 
 model User {
+  id          String               @id @default(uuid())
+  email       String               @unique
+  password    String
+  name        String
+  role        String               @default("USUARIO")
+  active      Boolean              @default(true)
+  createdAt   DateTime             @default(now())
+  tasks       Task[]
+  materias    Materia[]
+  resetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Materia {
   id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      String   @default("USUARIO")
-  active    Boolean  @default(true)
+  nombre    String
+  color     String   @default("#6366F1")
+  icono     String   @default("book-outline")
   createdAt DateTime @default(now())
+  userId    String
+  // Cascade: si el admin elimina un usuario, sus materias se borran también.
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks     Task[]
 }
 
 model Task {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
-  completed   Boolean  @default(false)
+  completed   Boolean   @default(false)
   dueDate     DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+  materiaId   String?
+  materia     Materia?  @relation(fields: [materiaId], references: [id])
 }
