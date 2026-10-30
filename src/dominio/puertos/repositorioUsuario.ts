@@ -9,6 +9,7 @@ export interface RepositorioUsuarios {
   buscarPorId(id: string): Promise<Usuario | null>;
   crear(usuario: Usuario): Promise<Usuario>;
   actualizarEstado(id: string, activo: boolean): Promise<Usuario>;
+  actualizarContrasena(id: string, contrasena: string): Promise<void>;
   eliminar(id: string): Promise<void>;
   listar(buscar?: string): Promise<UsuarioConTareasCount[]>;
   contarTotal(): Promise<number>;

@@ -52,6 +52,10 @@ export class RepositorioUsuariosPrisma implements RepositorioUsuarios {
     return convertir(actualizado);
   }
 
+  async actualizarContrasena(id: string, contrasena: string): Promise<void> {
+    await prisma.user.update({ where: { id }, data: { password: contrasena } });
+  }
+
   async eliminar(id: string): Promise<void> {
     await prisma.user.delete({ where: { id } });
   }
