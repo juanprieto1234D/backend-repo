@@ -15,8 +15,14 @@ const marcarTareaCompletada = new MarcarTareaCompletada(repositorio);
 
 export async function crear(req: Request, res: Response) {
   try {
-    const { titulo, descripcion, fechaLimite, usuarioId } = req.body;
-    const tarea = await crearTarea.ejecutar(titulo, descripcion || null, fechaLimite ? new Date(fechaLimite) : null, usuarioId);
+    const { titulo, descripcion, fechaLimite, usuarioId, materiaId } = req.body;
+    const tarea = await crearTarea.ejecutar(
+      titulo,
+      descripcion || null,
+      fechaLimite ? new Date(fechaLimite) : null,
+      usuarioId,
+      materiaId || null
+    );
     res.status(201).json(tarea);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -36,11 +42,18 @@ export async function listar(req: Request, res: Response) {
 export async function actualizar(req: Request, res: Response) {
   try {
     const id = req.params.id as string;
-    const { titulo, descripcion, fechaLimite } = req.body;
+    const { titulo, descripcion, fechaLimite, materiaId } = req.body;
     const tarea = await actualizarTarea.ejecutar(id, {
       titulo,
       descripcion,
-      fechaLimite: fechaLimite ? new Date(fechaLimite) : undefined,
+      // null = borrar la fecha; undefined = no tocarla
+      fechaLimite:
+        fechaLimite === undefined
+          ? undefined
+          : fechaLimite === null
+          ? null
+          : new Date(fechaLimite),
+      materiaId,
     });
     res.status(200).json(tarea);
   } catch (error: any) {

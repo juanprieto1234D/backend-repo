@@ -6,6 +6,7 @@ export class Tarea {
     public readonly completada: boolean,
     public readonly fechaLimite: Date | null,
     public readonly creadaEn: Date,
-    public readonly usuarioId: string
+    public readonly usuarioId: string,
+    public readonly materiaId: string | null = null
   ) {}
 }

@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import rutasAutenticacion from "./infraestructura/http/rutasAutenticacion";
 import rutasAdmin from "./infraestructura/http/rutasAdmin";
+import rutasMaterias from "./infraestructura/http/rutasMaterias";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./swagger";
 import { sembrarAdminInicial } from "./infraestructura/seedAdmin";
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", rutasAutenticacion);
 app.use("/tareas", rutasTareas);
+app.use("/materias", rutasMaterias);
 app.use("/admin", rutasAdmin);
 
 const PORT = process.env.PORT || 3000;

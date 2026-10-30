@@ -5,7 +5,16 @@ import { RepositorioTareas } from "../../dominio/puertos/repositorioTarea";
 const prisma = new PrismaClient();
 
 function convertir(tarea: any): Tarea {
-  return new Tarea(tarea.id, tarea.title, tarea.description, tarea.completed, tarea.dueDate, tarea.createdAt, tarea.userId);
+  return new Tarea(
+    tarea.id,
+    tarea.title,
+    tarea.description,
+    tarea.completed,
+    tarea.dueDate,
+    tarea.createdAt,
+    tarea.userId,
+    tarea.materiaId ?? null
+  );
 }
 
 export class RepositorioTareasPrisma implements RepositorioTareas {
@@ -19,6 +28,7 @@ export class RepositorioTareasPrisma implements RepositorioTareas {
         dueDate: tarea.fechaLimite,
         createdAt: tarea.creadaEn,
         userId: tarea.usuarioId,
+        materiaId: tarea.materiaId,
       },
     });
     return convertir(creada);
@@ -34,13 +44,14 @@ export class RepositorioTareasPrisma implements RepositorioTareas {
     return tarea ? convertir(tarea) : null;
   }
 
-  async actualizar(id: string, datos: Partial<{ titulo: string; descripcion: string | null; fechaLimite: Date | null }>): Promise<Tarea> {
+  async actualizar(id: string, datos: Partial<{ titulo: string; descripcion: string | null; fechaLimite: Date | null; materiaId: string | null }>): Promise<Tarea> {
     const actualizada = await prisma.task.update({
       where: { id },
       data: {
         title: datos.titulo,
         description: datos.descripcion,
         dueDate: datos.fechaLimite,
+        materiaId: datos.materiaId,
       },
     });
     return convertir(actualizada);

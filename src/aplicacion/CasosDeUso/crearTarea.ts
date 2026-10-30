@@ -5,7 +5,13 @@ import { RepositorioTareas } from "../../dominio/puertos/repositorioTarea";
 export class CrearTarea {
   constructor(private repositorioTareas: RepositorioTareas) {}
 
-  async ejecutar(titulo: string, descripcion: string | null, fechaLimite: Date | null, usuarioId: string): Promise<Tarea> {
+  async ejecutar(
+    titulo: string,
+    descripcion: string | null,
+    fechaLimite: Date | null,
+    usuarioId: string,
+    materiaId: string | null = null
+  ): Promise<Tarea> {
     const nuevaTarea = new Tarea(
       randomUUID(),
       titulo,
@@ -13,7 +19,8 @@ export class CrearTarea {
       false,
       fechaLimite,
       new Date(),
-      usuarioId
+      usuarioId,
+      materiaId
     );
     return this.repositorioTareas.crear(nuevaTarea);
   }
