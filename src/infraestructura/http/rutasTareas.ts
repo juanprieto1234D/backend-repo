@@ -1,127 +1,41 @@
 import { Router } from "express";
-import { crear, listar, actualizar, eliminar, completar } from "./controladorTareas";
+import {
+  crear,
+  listar,
+  actualizar,
+  eliminar,
+  completar,
+  subirAdjunto,
+  eliminarAdjunto,
+  obtenerTipsIA,
+  obtenerQuiz,
+  obtenerPlanHoy,
+  obtenerFlashcards // 👈 Agregado aquí
+} from "./controladorTareas";
+import { subirArchivo } from "./middlewareUpload";
 
 const router = Router();
 
-/**
- * @openapi
- * /tareas:
- *   post:
- *     summary: Crea una nueva tarea
- *     tags: [Tareas]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               titulo:
- *                 type: string
- *               descripcion:
- *                 type: string
- *               fechaLimite:
- *                 type: string
- *               usuarioId:
- *                 type: string
- *     responses:
- *       201:
- *         description: Tarea creada exitosamente
- */
 router.post("/", crear);
-
-/**
- * @openapi
- * /tareas/{usuarioId}:
- *   get:
- *     summary: Lista las tareas de un usuario
- *     tags: [Tareas]
- *     parameters:
- *       - in: path
- *         name: usuarioId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Lista de tareas
- */
 router.get("/:usuarioId", listar);
-
-/**
- * @openapi
- * /tareas/{id}:
- *   put:
- *     summary: Actualiza una tarea existente
- *     tags: [Tareas]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               titulo:
- *                 type: string
- *               descripcion:
- *                 type: string
- *               fechaLimite:
- *                 type: string
- *     responses:
- *       200:
- *         description: Tarea actualizada
- */
 router.put("/:id", actualizar);
-
-/**
- * @openapi
- * /tareas/{id}:
- *   delete:
- *     summary: Elimina una tarea
- *     tags: [Tareas]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       204:
- *         description: Tarea eliminada
- */
 router.delete("/:id", eliminar);
-
-/**
- * @openapi
- * /tareas/{id}/completar:
- *   patch:
- *     summary: Marca una tarea como completada o pendiente
- *     tags: [Tareas]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               completada:
- *                 type: boolean
- *     responses:
- *       200:
- *         description: Tarea actualizada
- */
 router.patch("/:id/completar", completar);
+
+// Rutas de Documentos Adjuntos
+router.post("/:id/adjuntos", subirArchivo.single("archivo"), subirAdjunto);
+router.delete("/adjuntos/:adjuntoId", eliminarAdjunto);
+
+// Ruta del Tutor IA (Gemini)
+router.post("/:id/tips-ia", obtenerTipsIA);
+
+// Ruta del Quiz
+router.post("/:id/quiz", obtenerQuiz);
+
+// Ruta del Plan del día
+router.get("/plan-hoy/:usuarioId", obtenerPlanHoy);
+
+// Ruta de Flashcards
+router.post("/:id/flashcards", obtenerFlashcards);
 
 export default router;
