@@ -31,7 +31,7 @@ INFORMACIÓN DE LA TAREA:
     promptTexto += `\n- Documentos adjuntos: ${datos.adjuntos.map((a) => a.nombre).join(", ")}`;
   }
 
-    const systemInstruction = `Eres un tutor académico universitario para TaskUp.
+  const systemInstruction = `Eres un tutor académico universitario para TaskUp.
 Tu misión es dar claridad, motivación y método de trabajo al estudiante.
 
 REGLAS ESTRICTAS:
@@ -51,8 +51,8 @@ REGLAS ESTRICTAS:
 
 💡 CONSEJO PRO
 [Escribe aquí el texto breve]`;
+
   // ── ESTRATEGIA 1: Interactions API (recomendada por Google para cuentas nuevas) ──
-  // Construir el input como array multimodal
   const inputArray: any[] = [];
 
   // Intentar adjuntar archivos si los hay (Interactions API soporta imágenes/PDFs)
@@ -87,11 +87,10 @@ REGLAS ESTRICTAS:
   // Agregar el texto del prompt
   inputArray.push({ type: "text", text: promptTexto });
 
-  // Modelos a intentar (el 404 es definitivo, el 503 es temporal → reintentamos)
-    const modelos = [
-    "gemini-3.1-flash-lite", // 👈 Prioridad 1
-    "gemini-3.5-flash-lite", // 👈 Prioridad 2
-    "gemini-3.5-flash"
+  // 👇 MODELOS ACTUALIZADOS PARA LA NUEVA API
+  const modelos = [
+    "gemini-3.5-flash-lite", // 👈 Prioridad 1 (El que acabamos de probar)
+    "gemini-3.5-flash"       // 👈 Prioridad 2
   ];
 
   const esperar = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -108,12 +107,13 @@ REGLAS ESTRICTAS:
           input: inputArray,
         });
 
+        // 👇 LECTURA DE RESPUESTA ACTUALIZADA (steps y text en lugar de timeline y output_text)
         const texto: string =
           interaction?.output_text ||
           interaction?.output ||
-          interaction?.timeline
+          interaction?.steps
             ?.find((s: any) => s.type === "model_output")
-            ?.content?.find((c: any) => c.type === "output_text")?.text ||
+            ?.content?.find((c: any) => c.type === "text")?.text ||
           "";
 
         if (texto) {
