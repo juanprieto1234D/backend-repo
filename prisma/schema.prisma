@@ -59,4 +59,16 @@ model Task {
   user        User      @relation(fields: [userId], references: [id])
   materiaId   String?
   materia     Materia?  @relation(fields: [materiaId], references: [id])
+  adjuntos    TaskAttachment[]
+}
+
+model TaskAttachment {
+  id        String   @id @default(uuid())
+  nombre    String   // Ej: "taller_calculo.pdf"
+  ruta      String   // Ruta donde se guarda en el servidor
+  mimeType  String?  // Ej: "application/pdf"
+  tamano    Int?     // Tamaño en bytes
+  createdAt DateTime @default(now())
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1794847797513" clover="3.2.0">
+  <project timestamp="1794847797513" name="All files">
+    <metrics statements="10" coveredstatements="8" conditionals="14" coveredconditionals="7" methods="3" coveredmethods="2" elements="27" coveredelements="17" complexity="0" loc="10" ncloc="10" packages="3" files="4" classes="4"/>
+    <package name="aplicacion.CasosDeUso">
+      <metrics statements="10" coveredstatements="8" conditionals="12" coveredconditionals="7" methods="2" coveredmethods="2"/>
+      <file name="generarQuiz.ts" path="C:\proyectos\backend-repo\src\aplicacion\CasosDeUso\generarQuiz.ts">
+        <metrics statements="10" coveredstatements="8" conditionals="12" coveredconditionals="7" methods="2" coveredmethods="2"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="15" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="18" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="19" count="0" type="stmt"/>
+        <line num="22" count="1" type="cond" truecount="3" falsecount="1"/>
+        <line num="23" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="dominio.entidades">
+      <metrics statements="0" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="tarea.ts" path="C:\proyectos\backend-repo\src\dominio\entidades\tarea.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="dominio.puertos">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="generadorQuiz.ts" path="C:\proyectos\backend-repo\src\dominio\puertos\generadorQuiz.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="repositorioTarea.ts" path="C:\proyectos\backend-repo\src\dominio\puertos\repositorioTarea.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+  </project>
+</coverage>

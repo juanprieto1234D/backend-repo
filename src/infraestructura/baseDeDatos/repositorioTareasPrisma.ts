@@ -13,7 +13,8 @@ function convertir(tarea: any): Tarea {
     tarea.dueDate,
     tarea.createdAt,
     tarea.userId,
-    tarea.materiaId ?? null
+    tarea.materiaId ?? null,
+    tarea.adjuntos ?? []
   );
 }
 
@@ -34,9 +35,13 @@ export class RepositorioTareasPrisma implements RepositorioTareas {
     return convertir(creada);
   }
 
-  async listarPorUsuario(usuarioId: string): Promise<Tarea[]> {
-    const tareas = await prisma.task.findMany({ where: { userId: usuarioId } });
+async listarPorUsuario(usuarioId: string): Promise<Tarea[]> {
+    const tareas = await prisma.task.findMany({
+      where: { userId: usuarioId },
+      include: { adjuntos: true },
+    });
     return tareas.map(convertir);
+  
   }
 
   async buscarPorId(id: string): Promise<Tarea | null> {
